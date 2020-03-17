@@ -24,15 +24,17 @@ def get_grid_format(board_dict):
     
     return grid_format
 
-def move(curr_pos, next_pos, n, board_dict):
-    # if there is no longer any tokens at this position
-    if (curr_pos[0] - n) == 0:
-        l = board_dict["white"]
-        l.remove(curr_pos)
-    next_pos[0] += n
-    l.append(next_pos)
-    board_dict["white"] = l    
-    pass
+def move(token, x, y, board_dict, n):
+    if (token[0] - n) == 0:
+        list = get_grid_format(board_dict)
+        del(list[(token[1], token[2])])
+    if (x, y) in list:
+        total = int(list[(x,y)][1]) + n
+        list[(x,y)] = "w" + str(total)
+    else:
+        list[(x,y)] = "w" + str(n)
+    return get_token_format(list)
+
 
 # Preprocessing for boom
 def boom(x, y, board_dict):
