@@ -31,7 +31,7 @@ def move(curr_pos, next_pos, n, board_dict):
         l.remove(curr_pos)
     next_pos[0] += n
     l.append(next_pos)
-    board_dict = l    
+    board_dict["white"] = l    
     pass
 
 # Preprocessing for boom
