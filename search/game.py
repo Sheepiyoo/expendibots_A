@@ -25,14 +25,17 @@ def get_grid_format(board_dict):
     return grid_format
 
 def move(token, x, y, board_dict, n):
-    if (token[0] - n) == 0:
-        list = get_grid_format(board_dict)
-        del(list[(token[1], token[2])])
     if (x, y) in list:
+        colour = list[(x,y)][0]
+        if colour == "b":
+            return 0
         total = int(list[(x,y)][1]) + n
         list[(x,y)] = "w" + str(total)
     else:
         list[(x,y)] = "w" + str(n)
+    if (token[0] - n) == 0:
+        list = get_grid_format(board_dict)
+        del(list[(token[1], token[2])])
     return get_token_format(list)
 
 
