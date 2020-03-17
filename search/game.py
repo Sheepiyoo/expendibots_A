@@ -27,7 +27,14 @@ class Board:
         
         self.grid_dict = grid_format
 
-    def move(self, n, x, y):
+
+    def move(curr_pos, next_pos, n):
+        
+
+        if(curr_pos[0] - n == 0):
+            board_dict.remove(curr_pos)
+
+        next_pos[0] = next_pos[0] + n
         pass
 
     def boom(self, x, y):
