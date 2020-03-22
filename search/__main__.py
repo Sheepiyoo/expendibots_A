@@ -3,6 +3,7 @@ import json
 
 from search.util import print_move, print_boom, print_board
 from search import game
+from search import big_brains as ai
 
 
 def main():
@@ -10,6 +11,8 @@ def main():
         data = json.load(file)
 
     # TODO: find and print winning action sequence
+    root = ai.Node(data, 0, 0, None, None)
+    print(root)
 
     print_board(game.get_grid_format(data) , "Original", compact=False)
     

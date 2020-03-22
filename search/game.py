@@ -31,16 +31,16 @@ def move(stack, x, y, board_dict, n):
 
     #Check for valid number of tokens moved
     if (n > orig_n):
-        raise Exception("""Invalid move from ({}, {}) to ({}, {}):
+        raise Exception("""# Invalid move from ({}, {}) to ({}, {}):
                             Tried to move {} tokens when only {} available""".format(orig_x, orig_y, x, y, n, orig_n))
 
     #Check for valid direction
     elif (orig_y != y and orig_x != x):
-        raise Exception("Invalid move from ({}, {}) to ({}, {}): Not a cardinal direction".format(orig_x, orig_y, x, y))
+        raise Exception("# Invalid move from ({}, {}) to ({}, {}): Not a cardinal direction".format(orig_x, orig_y, x, y))
     
     #Check for valid number of spaces moved
     elif (abs(orig_y - y) > n or abs(orig_x - x) > orig_n):
-        raise Exception("Invalid move from ({}, {}) to ({}, {}): Moved too many spaces".format(orig_x, orig_y, x, y))
+        raise Exception("# Invalid move from ({}, {}) to ({}, {}): Moved too many spaces".format(orig_x, orig_y, x, y))
     
     # Update original stack - 'lifting' the tokens
     grid_list[(orig_x, orig_y)] = "w" + str(orig_n - n)
@@ -54,7 +54,7 @@ def move(stack, x, y, board_dict, n):
         
         #Check for opponent piece
         if colour == "b":
-            raise Exception("Invalid move from ({}, {}) to ({}, {}): Opponent token present".format(orig_x, orig_y, x, y))
+            raise Exception("# Invalid move from ({}, {}) to ({}, {}): Opponent token present".format(orig_x, orig_y, x, y))
         
         #Add token to existing stack
         total = int(grid_list[(x,y)][1]) + n
@@ -63,7 +63,7 @@ def move(stack, x, y, board_dict, n):
         #Create a new token stack
         grid_list[(x,y)] = "w" + str(n)
 
-    print("Move from {} pieces from {}, {} to {}, {}".format(n, orig_x, orig_y, x, y))
+    print("# Move {} pieces from {}, {} to {}, {}".format(n, orig_x, orig_y, x, y))
     return get_token_format(grid_list)
 
 
@@ -85,7 +85,7 @@ def boom_recursive(x, y, grid_format):
         del(grid_format[(x,y)])
         
         #Debug line
-        print("removed token at" , x, y)
+        print("# Removed token at" , x, y)
 
         #Recursive explosion
         for i in range(-1,2):
