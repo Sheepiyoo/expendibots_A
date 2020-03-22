@@ -24,19 +24,47 @@ def get_grid_format(board_dict):
     
     return grid_format
 
+# Move a token
 def move(token, x, y, board_dict, n):
-    if (x, y) in list:
-        colour = list[(x,y)][0]
+    grid_list = get_grid_format(board_dict)
+    orig_n, orig_x, orig_y = token
+
+    #Check for valid number of tokens moved
+    if (n > orig_n):
+        raise Exception("""Invalid move from ({}, {}) to ({}, {}):
+                            Tried to move {} tokens when only {} available""".format(orig_x, orig_y, x, y, n, orig_n))
+
+    #Check for valid direction
+    elif (orig_y != y and orig_x != x):
+        raise Exception("Invalid move from ({}, {}) to ({}, {}): Not a cardinal direction".format(orig_x, orig_y, x, y))
+    
+    #Check for valid number of spaces moved
+    elif (abs(orig_y - y) > n or abs(orig_x - x) > orig_n):
+        raise Exception("Invalid move from ({}, {}) to ({}, {}): Moved too many spaces".format(orig_x, orig_y, x, y))
+    
+    # Update original stack - 'lifting' the tokens
+    grid_list[(orig_x, orig_y)] = "w" + str(orig_n - n)
+    if (int(grid_list[(orig_x,orig_y)][1])) == 0:
+        del(grid_list[(orig_x, orig_y)])
+
+    #'Placing' the token
+    #Check for existence of token
+    if (x, y) in grid_list.keys():
+        colour = grid_list[(x,y)][0]
+        
+        #Check for opponent piece
         if colour == "b":
-            return 0
-        total = int(list[(x,y)][1]) + n
-        list[(x,y)] = "w" + str(total)
+            raise Exception("Invalid move from ({}, {}) to ({}, {}): Opponent token present".format(orig_x, orig_y, x, y))
+        
+        #Add token to existing stack
+        total = int(grid_list[(x,y)][1]) + n
+        grid_list[(x,y)] = "w" + str(total)
     else:
-        list[(x,y)] = "w" + str(n)
-    if (token[0] - n) == 0:
-        list = get_grid_format(board_dict)
-        del(list[(token[1], token[2])])
-    return get_token_format(list)
+        #Create a new token stack
+        grid_list[(x,y)] = "w" + str(n)
+
+    print("Move from {} pieces from {}, {} to {}, {}".format(n, orig_x, orig_y, x, y))
+    return get_token_format(grid_list)
 
 
 # Preprocessing for boom
