@@ -25,9 +25,9 @@ def get_grid_format(board_dict):
     return grid_format
 
 # Move a token
-def move(token, x, y, board_dict, n):
+def move(stack, x, y, board_dict, n):
     grid_list = get_grid_format(board_dict)
-    orig_n, orig_x, orig_y = token
+    orig_n, orig_x, orig_y = stack
 
     #Check for valid number of tokens moved
     if (n > orig_n):
@@ -68,7 +68,8 @@ def move(token, x, y, board_dict, n):
 
 
 # Preprocessing for boom
-def boom(x, y, board_dict):
+def boom(stack, board_dict):
+    _, x, y = stack
     grid_format = get_grid_format(board_dict)
     boom_recursive(x, y, grid_format)
     return get_token_format(grid_format)

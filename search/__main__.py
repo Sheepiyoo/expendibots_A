@@ -28,7 +28,7 @@ def main():
 
 
     print_board(game.get_grid_format(data) , "Before boom", compact=False)
-    data = game.boom(4,7, data)
+    data = game.boom(data["white"][0], data)
     
     print_board(game.get_grid_format(data), "After boom", compact=False)
 
