@@ -38,8 +38,8 @@ def move(stack, x, y, board_dict, n):
         raise Exception("# Invalid move from ({}, {}) to ({}, {}): Not a cardinal direction".format(orig_x, orig_y, x, y))
     
     #Check for valid number of spaces moved
-    elif (abs(orig_y - y) > n or abs(orig_x - x) > orig_n):
-        raise Exception("# Invalid move from ({}, {}) to ({}, {}): Moved too many spaces".format(orig_x, orig_y, x, y))
+    elif (abs(orig_y - y) > orig_n or abs(orig_x - x) > orig_n):
+        raise Exception("# Invalid move from ({}, {}) to ({}, {}): Moved too many spaces. Only {} tokens available".format(orig_x, orig_y, x, y, n))
     
     # Update original stack - 'lifting' the tokens
     grid_list[(orig_x, orig_y)] = "w" + str(orig_n - n)
