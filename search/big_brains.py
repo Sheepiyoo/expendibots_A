@@ -83,7 +83,7 @@ def search(initial_state):
             break
 
         # sort open_list
-        nextmoves_list.sort(key = lambda x: x.heuristic)
+        nextmoves_list.sort(key = lambda x: x.heuristic)        # Can add path cost to get A star
         explored_list.append(curr_node)   # Insert into closed list
         explored_states.append(curr_node.board_dict)
 
