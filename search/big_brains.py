@@ -34,12 +34,15 @@ def heuristic(node):
 def search(initial_state):
     pass
 
+
+#returns whether the token is white
 def is_white(colour_n):
     player, n = colour_n
     if player == "w":
         return True
     return False
 
+# returns a list of in-bound positions n spaces away from given x,y 
 def possible_positions(x, y, n):
     positions = []
     if y+n < 9:
@@ -52,7 +55,7 @@ def possible_positions(x, y, n):
         positions.append((x, y-n))
     return positions
 
-
+# returns possible moves for a given stack
 def get_possible_moves(stack, board):
     grid_board = get_grid_format(board)
     possible_moves = []
@@ -64,6 +67,6 @@ def get_possible_moves(stack, board):
             if is_white(grid_board[(x, y)]):
                 possible_moves.append(["stack", x, y])
             else:
-                for i in range(1, n):
+                for i in range(1, stack[0]):
                     possible_moves.append(["move", (x, y), i])
     return possible_moves
