@@ -1,4 +1,5 @@
-# Node representation
+from game import get_grid_format
+#  Node representation
 class Node:
     def __init__(self, board_dict, path_cost, heuristic, action, parent):
         self.state = board_dict
@@ -85,3 +86,4 @@ def get_possible_moves(stack, board):
               for i in range(1, stack[0]+1):
                   possible_moves.append(["move", (x, y), i])
     return possible_moves
+
