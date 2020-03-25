@@ -21,7 +21,6 @@ def get_grid_format(board_dict):
     for player in board_dict.keys():
         for stack in board_dict[player]:
             grid_format[(stack[1], stack[2])] = ''.join([player[0], str(stack[0])])
-    
     return grid_format
 
 # Move a token
