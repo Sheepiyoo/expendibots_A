@@ -18,17 +18,21 @@ class Node:
 # Children: {}
 """.format(str(self.state), str(self.path_cost), str(self.heuristic), str(self.action), hex(id(self.parent)), [hex(id(child)) for child in self.children])
 
+
+def count_tokens(stack_list):
+    total = 0
+    for n, x, y in stack_list:
+        total += n
+    return total
+
 # Checks a node - True if no black token remains
 def goal_test(node):
-    # Need to implement token counter
-
     return len(node.board_dict['black']) == 0
 
 # Implement heuristic function (Currently h(n) = number of black tokens) 
 def heuristic(node):
-    # Need to implement token counter
-
-    return len(node.board_dict['black'])
+    total = count_tokens(node.board_dict['black'])
+    return total
 
 # Implement A-star search
 def search(initial_state):
