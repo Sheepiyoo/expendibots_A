@@ -88,6 +88,10 @@ def search(initial_state):
         explored_states.append(curr_node.board_dict)
 
     # Reconstruct solution by tracing back parents from curr_node (Thanks Emily :D )
+    while(curr_node.parent != None):
+        solution.insert(0, curr_node.action)
+        print(curr_node.action)
+        curr_node = curr_node.parent
     
     return start_node #for debugging purposes - change to return 'solution' after
 
