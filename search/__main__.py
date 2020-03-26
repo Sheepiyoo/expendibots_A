@@ -21,6 +21,17 @@ def main():
 
     ai.breadth_first_tree_traversal(tree)
 
+    solution = []
+
+    for action, origin, target, n in solution:
+        if action == "move":
+            pass
+        if action == "stack":
+            pass
+        if action == "boom":
+            pass
+        
+
     """
     for i in range(len(data["white"])):
         possible_moves = ai.get_possible_moves(data["white"][i], data)
