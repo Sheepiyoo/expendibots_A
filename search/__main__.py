@@ -15,7 +15,8 @@ def main():
     print(root)
 
     print(data)
-    print_board(game.get_grid_format(data) , "Original", compact=False)
+    board = game.get_grid_format(data)
+    print_board(board) , "Original", compact=False)
 
     tree = ai.search(data)
 
@@ -25,6 +26,7 @@ def main():
 
     for action, origin, target, n in solution:
         if action == "move":
+            
             pass
         if action == "stack":
             pass
