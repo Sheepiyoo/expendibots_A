@@ -4,6 +4,7 @@ import json
 from search.util import print_move, print_boom, print_board
 from search import game
 from search import big_brains as ai
+from search.constants import *
 
 
 def main():
@@ -12,25 +13,26 @@ def main():
 
     # TODO: find and print winning action sequence
     root = ai.Node(data, 0, None, None)
-    print(root)
-
     print(data)
-    board = game.get_grid_format(data)
-    print_board(board) , "Original", compact=False)
+    board = data
+    print_board(game.get_grid_format(board) , "Start")
 
-    tree = ai.search(data)
+    solution = ai.search(data)
+    print("solution",solution)
 
-    ai.breadth_first_tree_traversal(tree)
+    #ai.breadth_first_tree_traversal(solution)
+        
 
-    solution = []
+    for action, stack_from, stack_to in solution:
+        if action == "move" or action == "stack":
+            board = game.move(stack_from, stack_to, board)
+            if DEBUG: print_board(board)
+            else: print_move(stack_to[N_TOKENS], stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS])
 
-    for action, origin, target, n in solution:
-        if action == "move":
-            
-            pass
-        if action == "stack":
-            pass
         if action == "boom":
+            board = game.boom(stack_from, board)
+            if DEBUG: print_board(board)
+            else: print_boom(stack_from[X_POS], stack_from[Y_POS])
             pass
         
 
