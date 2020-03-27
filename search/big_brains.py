@@ -1,4 +1,5 @@
 from search.game import get_grid_format, boom, move
+from search.constants import *
 
 # Node representation
 # board_dict: Token arrangement on board
@@ -46,6 +47,7 @@ def search(initial_state):
     goal_found = False
     solution = []
     start_node = Node(initial_state, 0, None, None)
+    final_node = None
     
     # Node queue
     nextmoves_list = []
@@ -57,6 +59,7 @@ def search(initial_state):
     nextmoves_list.append(start_node)
 
     while(len(nextmoves_list) > 0):
+        print(nextmoves_list)
         curr_node = nextmoves_list.pop(0)    # Remove best node from open list
         if goal_test(curr_node):
             print("# GOAL FOUND: BIG BRAINZ")
@@ -74,6 +77,7 @@ def search(initial_state):
                 # reached the goal
                 curr_node = child
                 goal_found = True
+                final_node = child
                 break
             
             nextmoves_list.append(child)
@@ -90,10 +94,8 @@ def search(initial_state):
     # Reconstruct solution by tracing back parents from curr_node (Thanks Emily :D )
     while(curr_node.parent != None):
         solution.insert(0, curr_node.action)
-        print(curr_node.action)
         curr_node = curr_node.parent
-    
-    return start_node #for debugging purposes - change to return 'solution' after
+    return solution #for debugging purposes - change to return 'solution' after
 
 
 #returns whether the token is white
@@ -106,9 +108,9 @@ def is_white(colour_n):
 # returns a list of in-bound positions n spaces away from given x,y
 def possible_positions(x, y, n):
     positions = []
-    if y+n < 8:
+    if y+n < BOARD_SIZE:
         positions.append((x, y+n))
-    if x+n < 8:
+    if x+n < BOARD_SIZE:
         positions.append((x+n, y))
     if (x-n) >= 0:
         positions.append((x-n, y))
@@ -119,34 +121,44 @@ def possible_positions(x, y, n):
 
 # returns possible moves for a given stack
 # Each action has the format: ["action", origin, target, n_tokens]
-def get_possible_moves(stack, board):
+def get_possible_actions(stack_from, board):
     grid_board = get_grid_format(board)
-    possible_moves = []
-    x_pos = stack[1]
-    y_pos = stack[2]
-    possible_moves.append(["boom", (x_pos, y_pos), (x_pos, y_pos), stack[0]])
+    possible_actions = []
+    #n_original = stack
+    x_pos, y_pos = stack_from[X_POS],  stack_from[Y_POS]
+    possible_actions.append(["boom", stack_from, stack_from])
     #print(grid_board)
     
-    for n in range(1, stack[0]+1):
-        for (x, y) in possible_positions(x_pos, y_pos, n):
-          if (x, y) in grid_board:
-            if is_white(grid_board[(x, y)]):
-              for i in range(1, stack[0]+1):
-                possible_moves.append(["move", (x_pos, y_pos), (x, y), i])
-          else:
-              for i in range(1, stack[0]+1):
-                possible_moves.append(["move",(x_pos, y_pos), (x, y), i])
-    return possible_moves
+    # for each possible stack of n tokens 
+    for n in range(1, stack_from[N_TOKENS]+1):
+        print(n, "this is n")
+        # for each possible position from given position
+        for (x, y) in possible_positions(stack_from[X_POS], stack_from[Y_POS], n):
+
+            # if a stack already exists on the board, add the stack
+            if (x, y) in grid_board:
+                if is_white(grid_board[(x, y)]):
+                    for i in range(1, stack_from[0]+1):
+                        stack_to = [i, x, y]
+                        possible_actions.append(["move", stack_from, stack_to])
+                
+            else:
+                for i in range(1, stack_from[0]+1):
+                    stack_to = [i, x, y]
+                    possible_actions.append(["move", stack_from, stack_to])
+    print(possible_actions)
+    return possible_actions
 
 # Given a node, generate all possible children from that node
 def generate_children(parent_node):
     for stack in parent_node.board_dict["white"]:
-        moves = get_possible_moves(stack, parent_node.board_dict)
-        for move in moves:
+        actions = get_possible_actions(stack, parent_node.board_dict)
+        print('possible actions',actions)
+        for action in actions:
             try:
-                child_node = Node(state_after_move(stack, parent_node.board_dict, move),
+                child_node = Node(state_after_move(stack, parent_node.board_dict, action),
                                 parent_node.path_cost + 1,
-                                move,
+                                action,
                                 parent_node)
             except:
                 print("Bug - Crashing prgoram")
@@ -157,17 +169,17 @@ def generate_children(parent_node):
 
 # Generates the board_state after a move, without modifiying the original state
 def state_after_move(stack, board_dict, action):
-    if action[0] == "boom":
+    if action[ACTION] == "boom":
         try:
             board_dict = boom(stack, board_dict)
         except:
             print("Tried to execute: boom({}, {}) ".format(stack, board_dict))
             raise Exception("Move invalid")
-    elif action[0] == "move":
+    elif action[ACTION] == "move":
         try:
-            board_dict = move(stack, action[2][0], action[2][1], board_dict, action[3])
+            board_dict = move(stack, action[TO], board_dict)
         except:
-            print("Tried to execute: move({}, {}, {}, {}, {}) ".format(stack, action[2][0], action[2][1], board_dict, action[3]))
+            print("Tried to execute: move({}, {}, {}, {}, {}) ".format(stack, action[TO][X_POS], action[TO][Y_POS], board_dict, action[TO][N_TOKENS]))
             raise Exception("Move invalid")
     else:
         raise Exception("state_after_move: Invalid action")
