@@ -12,6 +12,14 @@ def main():
         data = json.load(file)
 
     # TODO: find and print winning action sequence
+    board = data
+    print_board(game.get_grid_format(board) , "Start")
+    board = game.move(data["white"][0], [1,0,0], board)
+    print_board(game.get_grid_format(board) , "Moved")
+    board = game.move([1,0,0], [1,1,0], board)
+    print_board(game.get_grid_format(board) , "Moved")
+
+    """
     root = ai.Node(data, 0, None, None)
     print(data)
     board = data
@@ -22,7 +30,7 @@ def main():
 
     #ai.breadth_first_tree_traversal(solution)
         
-
+    
     for action, stack_from, stack_to in solution:
         if action == "move" or action == "stack":
             board = game.move(stack_from, stack_to, board)
@@ -34,7 +42,7 @@ def main():
             if DEBUG: print_board(board)
             else: print_boom(stack_from[X_POS], stack_from[Y_POS])
             pass
-        
+    """ 
 
     """
     for i in range(len(data["white"])):
@@ -53,26 +61,6 @@ def main():
 
     #print(moved)
 
-    """
-    data = game.move(data["white"][0], 0, 0, data, 1)
-    data["white"].sort()
-    print(data["white"])
-    print_board(game.get_grid_format(data) , "Move 0,1 to 0,0", compact=False)
     
-    data = game.move(data["white"][0], 1, 0, data, 1)
-    print(data["white"])
-    
-    print_board(game.get_grid_format(data) , "Move 0,0 to 1,0", compact=False)
-    data = game.move(data["white"][0], 3, 0, data, 1)
-    
-    print_board(game.get_grid_format(data) , "Move 1,0 to 3,0", compact=False)
-
-
-    print_board(game.get_grid_format(data) , "Before boom", compact=False)
-    data = game.boom(data["white"][0], data)
-    
-    print_board(game.get_grid_format(data), "After boom", compact=False)
-    """
-
 if __name__ == '__main__':
     main()

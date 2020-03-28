@@ -31,12 +31,14 @@ def move(stack_from, stack_to, board_dict):
     grid_list = get_grid_format(board_dict)
 
     grid_list[(stack_from[X_POS], stack_from[Y_POS])] = "w" + str(stack_from[N_TOKENS] - stack_to[N_TOKENS])
-    if (int(grid_list[(stack_from[X_POS], stack_from[Y_POS])])) == 0:
+    
+    # if we moved all tokens from a square, clear it from the dictionary representation
+    if (int(grid_list[(stack_from[X_POS], stack_from[Y_POS])][1])) == 0:
         del(grid_list[(stack_from[X_POS], stack_from[Y_POS])])
 
     # if the position is already occupied
     if (stack_to[X_POS], stack_to[Y_POS]) in grid_list:
-        colour = grid_list(stack_to[X_POS], stack_to[Y_POS])
+        colour = grid_list[(stack_to[X_POS], stack_to[Y_POS])][0]
 
         # occupied by black tokens
         if colour == "b":
@@ -44,7 +46,7 @@ def move(stack_from, stack_to, board_dict):
 
         # occupied by white tokens
         if colour == "w":
-            total = int(grid_list[(stack_to[X_POS],stack_from[Y_POS])][N_TOKENS]) + stack_to[N_TOKENS]
+            total = int(grid_list[(stack_to[X_POS],stack_from[Y_POS])][1]) + stack_to[N_TOKENS]
             grid_list[(stack_to[X_POS],stack_from[Y_POS])] = "w" + str(total)
             print_move(stack_to[N_TOKENS], stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS])
     # if it's not occupied
