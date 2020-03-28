@@ -31,6 +31,7 @@ def main():
 
     solution = ai.search(data)
     print("# solution",solution)
+    
 
     #ai.breadth_first_tree_traversal(solution)
         
@@ -45,7 +46,7 @@ def main():
             if DEBUG: print_board(game.get_grid_format(board))
             else: print_boom(stack_from[X_POS], stack_from[Y_POS])
             pass
-
+    print("# length of solution ", len(solution))
     print("# Execution time: ", time.time() - start)
 
 if __name__ == '__main__':

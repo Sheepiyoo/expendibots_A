@@ -40,8 +40,43 @@ def goal_test(node):
 
 # Implement heuristic function (Currently h(n) = number of black tokens) 
 def heuristic(node):
-    total = count_tokens(node.board_dict['black'])
-    return total
+    if len(node.board_dict["white"]) > 0:
+        best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
+    else:
+        best_stack = 1
+
+    total = 0
+    for stack in node.board_dict["black"]:
+        total += min_distance_from_stack(stack, node.board_dict["white"])
+
+    #NOT ADMISSIBLE: Consider 3 blacks surrounding 1 white in a corner
+    # h(n) = 3, but true move is 1
+
+    #total = count_tokens(node.board_dict['black'])
+    #print(total)
+    return total//best_stack
+
+def chess_distance(stack1, stack2):
+    # Chess board distance as booming can take surrounding 9 squares
+    return max(abs(stack1[X_POS]-stack2[X_POS]),abs(stack1[Y_POS]-stack2[Y_POS]))
+
+def hamming_distance(stack1, stack2):
+    # Chess board distance as booming can take surrounding 9 squares
+    return abs(stack1[X_POS]-stack2[X_POS]) + abs(stack1[Y_POS]-stack2[Y_POS])
+
+def min_distance_from_stack(source, stack_list):
+    # Minimum distance from a black stack to one of the white stacks
+    min_distance = BOARD_SIZE*2
+    for i in range(len(stack_list)):
+        h_dist = hamming_distance(source, stack_list[i])
+        c_dist = chess_distance(source, stack_list[i])
+        
+        if c_dist == 1: return 1
+        else:
+            min_distance = min(min_distance, h_dist)
+
+    return min_distance
+
 
 # Implement A-star search
 def search(initial_state):
@@ -88,7 +123,7 @@ def search(initial_state):
             break
 
         # sort open_list
-        nextmoves_list.sort(key = lambda x: x.heuristic)        # Can add path cost to get A star
+        nextmoves_list.sort(key = lambda x: x.heuristic + x.path_cost)        # Can add path cost to get A star
         explored_list.append(curr_node)   # Insert into closed list
         explored_states.append(curr_node.board_dict)
 
