@@ -15,7 +15,7 @@ class Node:
         self.action = action
         self.parent = parent
         self.children = []
-        self.heuristic = heuristic(self)
+        self.heuristic = heuristic5(self)
 
     def __str__(self):
         return """
@@ -39,32 +39,74 @@ def goal_test(node):
     return len(node.board_dict['black']) == 0
 
 # Implement heuristic function (Currently h(n) = number of black tokens) 
-def heuristic(node):
+def heuristic1(node):
+    # Best of n chunk distance
+    if len(node.board_dict["white"]) > 0:
+        best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
+    else:
+        best_stack = 1
+
+    chunk_list = get_chunks({"black": node.board_dict["black"]})
+    distances = []
+    
+    for chunk in chunk_list:
+        distances.append(min_distance_from_chunk(chunk, node.board_dict["white"]))
+    
+    distances.sort()
+    return sum(distances[:len(node.board_dict["white"])])//best_stack
+
+def heuristic2(node):
+    # Number of black tokens remaining
+    return count_tokens(node.board_dict["black"])
+
+def heuristic3(node):
+    # Best of n stack distance
     if len(node.board_dict["white"]) > 0:
         best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
     else:
         best_stack = 1
 
     distances = []
+    
     for stack in node.board_dict["black"]:
         distances.append(min_distance_from_stack(stack, node.board_dict["white"]))
+    
+    distances.sort()    
+    return sum(distances)//best_stack
 
-    return sum(distances[:len(node.board_dict["white"])])//best_stack
+def heuristic4(node):
+    # Total minimum stack distance
+    if len(node.board_dict["white"]) > 0:
+        best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
+    else:
+        best_stack = 1
 
-    #NOT ADMISSIBLE: Consider 3 blacks surrounding 1 white in a corner
-    # h(n) = 3, but true move is 1
+    chunk_list = get_chunks({"black": node.board_dict["black"]})
+    distances = []
+    
+    for chunk in chunk_list:
+        distances.append(min_distance_from_chunk(chunk, node.board_dict["white"]))
+    
+    return sum(distances)//best_stack
 
-    #total = count_tokens(node.board_dict['black'])
-    #print(total)
-    #return total//best_stack
+def heuristic5(node):
+    # Not admissible because of heuristic 2
+    #num_black = len(node.board_dict["black"])
+    num_black = len(get_chunks({"black": node.board_dict["black"]}))
+    num_white = len(get_chunks({"white": node.board_dict["white"]}))
 
-def chess_distance(stack1, stack2):
-    # Chess board distance as booming can take surrounding 9 squares
-    return max(abs(stack1[X_POS]-stack2[X_POS]),abs(stack1[Y_POS]-stack2[Y_POS]))
+    if num_black <= num_white:
+        return heuristic1(node)
+    else:
+        return heuristic2(node)
 
-def hamming_distance(stack1, stack2):
-    # Chess board distance as booming can take surrounding 9 squares
-    return abs(stack1[X_POS]-stack2[X_POS]) + abs(stack1[Y_POS]-stack2[Y_POS])
+def min_distance_from_chunk(chunk, stack_list):
+    min_distance = BOARD_SIZE*2
+
+    for stack in chunk:
+        min_distance = min(min_distance, min_distance_from_stack(stack, stack_list))
+    
+    return min_distance
 
 def min_distance_from_stack(source, stack_list):
     # Minimum distance from a black stack to one of the white stacks
@@ -77,6 +119,13 @@ def min_distance_from_stack(source, stack_list):
 
     return min_distance
 
+def chess_distance(stack1, stack2):
+    # Chess board distance as booming can take surrounding 9 squares
+    return max(abs(stack1[X_POS]-stack2[X_POS]),abs(stack1[Y_POS]-stack2[Y_POS]))
+
+def hamming_distance(stack1, stack2):
+    # Chess board distance as booming can take surrounding 9 squares
+    return abs(stack1[X_POS]-stack2[X_POS]) + abs(stack1[Y_POS]-stack2[Y_POS])
 
 def get_chunks(board_dict):
     chunks = [] 
@@ -153,7 +202,8 @@ def search(initial_state):
         if goal_found:
             print("# GOAL FOUND: BIG BRAINZ")
             break
-
+        
+       
         # sort open_list
         nextmoves_list.sort(key = lambda x: x.heuristic + x.path_cost)        # Can add path cost to get A star
         explored_list.append(curr_node)   # Insert into closed list
@@ -163,6 +213,7 @@ def search(initial_state):
     while(curr_node.parent != None):
         solution.insert(0, curr_node.action)
         curr_node = curr_node.parent
+    #return start_node
     return solution #for debugging purposes - change to return 'solution' after
 
 

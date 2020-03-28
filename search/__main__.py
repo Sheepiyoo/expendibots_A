@@ -24,7 +24,6 @@ def main():
     """
     start = time.time()
     
-    root = ai.Node(data, 0, None, None)
     print(data)
     board = data
     print_board(game.get_grid_format(board) , "Start")
