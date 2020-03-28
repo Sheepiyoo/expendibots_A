@@ -8,7 +8,8 @@ def get_token_format(grid_dict):
     token_format = {"white":[], "black": []}
     for coordinate in grid_dict.keys():
         x, y = coordinate
-        player, n = grid_dict[coordinate]
+        player = grid_dict[coordinate][0]
+        n = grid_dict[coordinate][1:]
 
         if player == 'w':
             token_format["white"].append([int(n), x, y])
@@ -34,7 +35,9 @@ def move(stack_from, stack_to, board_dict):
     if (stack_to[N_TOKENS] > stack_from[N_TOKENS]):
         raise Exception("""# Invalid move from ({}, {}) to ({}, {}):
                             Tried to move {} tokens when only {} available""".format(stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS], stack_to[N_TOKENS], stack_from[N_TOKENS]))
-        
+
+    #Check for valid space - whether (x,y) is actually on the board
+
     #Check for valid direction
     elif (stack_from[Y_POS] != stack_to[Y_POS] and stack_from[X_POS] != stack_to[X_POS]):
         raise Exception("# Invalid move from ({}, {}) to ({}, {}): Not a cardinal direction".format(stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS]))
@@ -138,7 +141,7 @@ def boom_recursive(x, y, grid_format):
         del(grid_format[(x,y)])
         
         #Debug line
-        print("# Removed token at" , x, y)
+        #print("# Removed token at" , x, y)
 
         #Recursive explosion
         for i in range(-1,2):

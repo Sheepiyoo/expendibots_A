@@ -1,5 +1,6 @@
 from search.game import get_grid_format, boom, move
 from search.constants import *
+import traceback
 
 # Node representation
 # board_dict: Token arrangement on board
@@ -131,7 +132,7 @@ def get_possible_actions(stack_from, board):
     
     # for each possible stack of n tokens 
     for n in range(1, stack_from[N_TOKENS]+1):
-        print(n, "this is n")
+        # print(n, "this is n")
         # for each possible position from given position
         for (x, y) in possible_positions(stack_from[X_POS], stack_from[Y_POS], n):
 
@@ -146,14 +147,14 @@ def get_possible_actions(stack_from, board):
                 for i in range(1, stack_from[0]+1):
                     stack_to = [i, x, y]
                     possible_actions.append(["move", stack_from, stack_to])
-    print(possible_actions)
+    #print(possible_actions)
     return possible_actions
 
 # Given a node, generate all possible children from that node
 def generate_children(parent_node):
     for stack in parent_node.board_dict["white"]:
         actions = get_possible_actions(stack, parent_node.board_dict)
-        print('possible actions',actions)
+        #print('possible actions',actions)
         for action in actions:
             try:
                 child_node = Node(state_after_move(stack, parent_node.board_dict, action),
@@ -161,7 +162,8 @@ def generate_children(parent_node):
                                 action,
                                 parent_node)
             except:
-                print("Bug - Crashing prgoram")
+                traceback.print_exc()
+                print("Bug - Crashing program")
                 print(parent_node, move, stack)
                 exit()
             parent_node.children.append(child_node)

@@ -1,5 +1,6 @@
 import sys
 import json
+import time
 
 from search.util import print_move, print_boom, print_board
 from search import game
@@ -21,6 +22,7 @@ def main():
     board = game.move([1,0,1], [1,0,0], board)
     print_board(game.get_grid_format(board) , "Moved")
     """
+    start = time.time()
     
     root = ai.Node(data, 0, None, None)
     print(data)
@@ -44,5 +46,7 @@ def main():
             else: print_boom(stack_from[X_POS], stack_from[Y_POS])
             pass
 
+    print("Execution time: ", time.time() - start)
+    
 if __name__ == '__main__':
     main()
