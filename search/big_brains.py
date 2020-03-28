@@ -59,7 +59,7 @@ def search(initial_state):
     nextmoves_list.append(start_node)
 
     while(len(nextmoves_list) > 0):
-        print(nextmoves_list)
+        #print(nextmoves_list)
         curr_node = nextmoves_list.pop(0)    # Remove best node from open list
         if goal_test(curr_node):
             print("# GOAL FOUND: BIG BRAINZ")
@@ -172,13 +172,15 @@ def state_after_move(stack, board_dict, action):
     if action[ACTION] == "boom":
         try:
             board_dict = boom(stack, board_dict)
-        except:
+        except Exception as e:
+            print(e)
             print("Tried to execute: boom({}, {}) ".format(stack, board_dict))
             raise Exception("Move invalid")
     elif action[ACTION] == "move":
         try:
             board_dict = move(stack, action[TO], board_dict)
-        except:
+        except Exception as e:
+            print(str(e))
             print("Tried to execute: move({}, {}, {}, {}, {}) ".format(stack, action[TO][X_POS], action[TO][Y_POS], board_dict, action[TO][N_TOKENS]))
             raise Exception("Move invalid")
     else:
