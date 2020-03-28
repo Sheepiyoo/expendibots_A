@@ -31,6 +31,19 @@ def move(stack_from, stack_to, board_dict):
     grid_list = get_grid_format(board_dict)
 
     grid_list[(stack_from[X_POS], stack_from[Y_POS])] = "w" + str(stack_from[N_TOKENS] - stack_to[N_TOKENS])
+
+    #     #Check for valid number of tokens moved
+    if (stack_to[N_TOKENS] > stack_from[N_TOKENS]):
+        raise Exception("""# Invalid move from ({}, {}) to ({}, {}):
+                            Tried to move {} tokens when only {} available""".format(stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS], stack_to[N_TOKENS], stack_from[N_TOKENS]))
+
+    #Check for valid direction
+    elif (stack_from[Y_POS] != stack_to[Y_POS] and stack_from[X_POS] != stack_to[X_POS]):
+        raise Exception("# Invalid move from ({}, {}) to ({}, {}): Not a cardinal direction".format(stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS]))
+    
+    #Check for valid number of spaces moved
+    elif (abs(stack_from[Y_POS] - stack_to[Y_POS]) > stack_from[N_TOKENS] or abs(stack_from[X_POS] - stack_to[X_POS]) > stack_from[N_TOKENS]):
+        raise Exception("# Invalid move from ({}, {}) to ({}, {}): Moved too many spaces. Only {} tokens available".format(stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS], stack_to[N_TOKENS]))
     
     # if we moved all tokens from a square, clear it from the dictionary representation
     if (int(grid_list[(stack_from[X_POS], stack_from[Y_POS])][1])) == 0:
