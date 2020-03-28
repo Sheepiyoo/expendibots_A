@@ -98,7 +98,7 @@ def chunk_recursive(x, y, grid_format, chunk):
     
     #If a token is present, explode!        
     if (x, y) in grid_format.keys():
-        chunk.append([x, y, grid_format[(x,y)][1:]])
+        chunk.append([int(grid_format[(x,y)][1:]), x, y])
         del(grid_format[(x,y)])
 
         #Recursive explosion
