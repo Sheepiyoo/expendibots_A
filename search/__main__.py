@@ -30,7 +30,7 @@ def main():
     print_board(game.get_grid_format(board) , "Start")
 
     solution = ai.search(data)
-    print("solution",solution)
+    print("# solution",solution)
 
     #ai.breadth_first_tree_traversal(solution)
         
