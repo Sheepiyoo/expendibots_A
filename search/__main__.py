@@ -46,7 +46,7 @@ def main():
             else: print_boom(stack_from[X_POS], stack_from[Y_POS])
             pass
 
-    print("Execution time: ", time.time() - start)
-    
+    print("# Execution time: ", time.time() - start)
+
 if __name__ == '__main__':
     main()
