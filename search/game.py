@@ -31,6 +31,8 @@ def move(stack_from, stack_to, board_dict):
     grid_list = get_grid_format(board_dict)
 
     grid_list[(stack_from[X_POS], stack_from[Y_POS])] = "w" + str(stack_from[N_TOKENS] - stack_to[N_TOKENS])
+
+    # if all tokens removed, remove position from dictionary
     if (int(grid_list[(stack_from[X_POS], stack_from[Y_POS])])) == 0:
         del(grid_list[(stack_from[X_POS], stack_from[Y_POS])])
 
