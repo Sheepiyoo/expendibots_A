@@ -78,6 +78,38 @@ def min_distance_from_stack(source, stack_list):
     return min_distance
 
 
+def get_chunks(board_dict):
+    chunks = [] 
+    grid_format = get_grid_format(board_dict)
+    grid_copy = grid_format.copy()
+
+    for (x,y) in grid_copy:
+        chunk = []
+        chunk_recursive(x, y, grid_format, chunk)
+        if len(chunk) != 0:
+          chunks.append(chunk)
+    return chunks
+
+
+def chunk_recursive(x, y, grid_format, chunk):
+    #Check bounds
+    if not (0 <= x < 8 and 0 <= y < 8):
+        return
+    
+    #If a token is present, explode!        
+    if (x, y) in grid_format.keys():
+        chunk.append([x, y, grid_format[(x,y)][1:]])
+        del(grid_format[(x,y)])
+
+        #Recursive explosion
+        for i in range(-1,2):
+            for j in range(-1, 2):
+                chunk_recursive(x+i, y+j, grid_format, chunk)
+    else:
+      return
+    return    
+
+
 # Implement A-star search
 def search(initial_state):
     goal_found = False
