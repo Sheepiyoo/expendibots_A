@@ -15,7 +15,9 @@ def run():
             "black": []}
 
     num_stack_white = random.randint(1, MAX_STACK_WHITE)
-    num_stack_black = random.randint(1, MAX_STACK_BLACK)
+
+    num_stack_black = random.randint(1, 4 * num_stack_white)
+    #num_stack_black = random.randint(1, MAX_STACK_BLACK)
 
     occupied = []
 
@@ -34,7 +36,7 @@ def run():
     for stack in range(num_stack_black):
         if MAX_NUM_BLACK <= 0: break
 
-        n = random.randint(1, min(3, MAX_NUM_BLACK))
+        n = random.randint(1, min(2, MAX_NUM_BLACK))
         x = random.randint(0, 7)
         y = random.randint(0, 7)
 

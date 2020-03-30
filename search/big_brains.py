@@ -53,7 +53,7 @@ def heuristic1(node):
         distances.append(min_distance_from_chunk(chunk, node.board_dict["white"]))
     
     distances.sort()
-    return sum(distances[:len(node.board_dict["white"])])//best_stack
+    return sum(distances)//best_stack #[:len(node.board_dict["white"])]
 
 def heuristic2(node):
     # Number of black tokens remaining
@@ -92,13 +92,14 @@ def heuristic4(node):
 def heuristic5(node):
     # Not admissible because of heuristic 2
     #num_black = len(node.board_dict["black"])
-    num_black = len(get_chunks({"black": node.board_dict["black"]}))
-    num_white = len(get_chunks({"white": node.board_dict["white"]}))
+    #num_black = len(get_chunks({"black": node.board_dict["black"]}))
+    #num_white = len(get_chunks({"white": node.board_dict["white"]}))
 
-    if num_black <= num_white:
-        return heuristic1(node)
-    else:
-        return heuristic2(node)
+    #if num_black <= num_white:
+    #    return heuristic3(node)
+    #else:
+    #    return heuristic3(node)
+    return heuristic3(node)
 
 def min_distance_from_chunk(chunk, stack_list):
     min_distance = BOARD_SIZE*2
@@ -112,10 +113,10 @@ def min_distance_from_stack(source, stack_list):
     # Minimum distance from a black stack to one of the white stacks
     min_distance = BOARD_SIZE*2
     for i in range(len(stack_list)):
-        #h_dist = hamming_distance(source, stack_list[i]) - 1
-        c_dist = chess_distance(source, stack_list[i]) - 1
+        h_dist = hamming_distance(source, stack_list[i]) - 1
+        #c_dist = chess_distance(source, stack_list[i]) - 1
         
-        min_distance = min(min_distance, c_dist)
+        min_distance = min(min_distance, h_dist)
 
     return min_distance
 
@@ -208,6 +209,12 @@ def search(initial_state):
         nextmoves_list.sort(key = lambda x: x.heuristic + x.path_cost)        # Can add path cost to get A star
         explored_list.append(curr_node)   # Insert into closed list
         explored_states.append(curr_node.board_dict)
+
+    if goal_found == False:
+        print("# No solution")
+        raise Exception("No solution possible")
+        return
+        
 
     # Reconstruct solution by tracing back parents from curr_node (Thanks Emily :D )
     while(curr_node.parent != None):
