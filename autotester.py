@@ -2,7 +2,7 @@ import test_case_generator
 import subprocess
 from shutil import move
 
-target = 100
+target = 10
 
 good_count = 0
 bad_count = 0

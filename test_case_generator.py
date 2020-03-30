@@ -5,11 +5,11 @@ from search.game import get_grid_format
 
 def run():
     BOARD_SIZE = 8
-    MAX_NUM_WHITE = 12
+    MAX_NUM_WHITE = 3
     MAX_NUM_BLACK = 12
 
-    MAX_STACK_WHITE = 12
-    MAX_STACK_BLACK = 12
+    MAX_STACK_WHITE = 3
+    MAX_STACK_BLACK = 8
 
     data = {"white": [],
             "black": []}
