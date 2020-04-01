@@ -101,6 +101,7 @@ def heuristic5(node):
     #    return heuristic3(node)
     return heuristic3(node)
 
+
 def min_distance_from_chunk(chunk, stack_list):
     min_distance = BOARD_SIZE*2
 
@@ -330,3 +331,4 @@ def breadth_first_tree_traversal(root):
     
     print("# Nodes explored: ", count)
     return
+
