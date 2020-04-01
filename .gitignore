@@ -1,7 +1,2 @@
 .vscode/settings.json
-<<<<<<< HEAD
 auto_test/
-=======
-board_inspector.py
-*.json
->>>>>>> 6ac83732599237e89e47fe4c4d499080f967b82d
