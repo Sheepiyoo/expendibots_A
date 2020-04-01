@@ -37,7 +37,7 @@ def move(stack_from, stack_to, board_dict):
                             Tried to move {} tokens when only {} available""".format(stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS], stack_to[N_TOKENS], stack_from[N_TOKENS]))
 
     #Check for valid space - whether (x,y) is actually on the board
-    elif (stack_to[X_POS] > 8 or stack_to[Y_POS] > 8 or stack_to[X_POS] < 0 or stack_to[Y_POS] < 0):
+    elif (stack_to[X_POS] >= 8 or stack_to[Y_POS] >= 8 or stack_to[X_POS] < 0 or stack_to[Y_POS] < 0):
         raise Exception("# Invalid move from ({}, {}) to {}, {}): Not on board".format(stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS]))
 
     #Check for valid direction
