@@ -1,3 +1,4 @@
 
 .vscode/settings.json
 board_inspector.py
+*.json
