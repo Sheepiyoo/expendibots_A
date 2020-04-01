@@ -76,7 +76,7 @@ def move(stack_from, stack_to, board_dict):
     
     return get_token_format(grid_list)
 
-            
+
             
 
 
