@@ -1,0 +1,2 @@
+0, 1, 2 -- Failed with greedy
+199, 305 -- Failed with A*
