@@ -14,9 +14,9 @@ for filename in glob.glob(args.folder + '\*.json'):
         data = json.load(file)
 
     print_board(get_grid_format(data))
-    is_possible = input("Press N to delete\n")
+    is_possible = input("Press n to delete\n")
 
-    if is_possible == 'N':
+    if is_possible == 'n':
         os.remove(filename)
     
 
