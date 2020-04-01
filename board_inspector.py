@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(description="Inspect board configurations.")
 parser.add_argument('--folder', type=str, required=True, help='Folder of test cases')
 args = parser.parse_args()
 
-for filename in glob.glob(args.folder + '\*.json'):
+for filename in glob.glob(args.folder + '/*.json'):
     with open(filename) as file:
         data = json.load(file)
 
