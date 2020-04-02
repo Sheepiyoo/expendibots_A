@@ -78,6 +78,53 @@ def move(stack_from, stack_to, board_dict):
     
     return get_token_format(grid_list)
 
+
+            
+
+
+# # Move n tokens from stack to x,y and returns board after
+# def move(stack, x, y, board_dict, n):
+#     grid_list = get_grid_format(board_dict)
+#     orig_n, orig_x, orig_y = stack
+
+#     #Check for valid number of tokens moved
+#     if (n > orig_n):
+#         raise Exception("""# Invalid move from ({}, {}) to ({}, {}):
+#                             Tried to move {} tokens when only {} available""".format(orig_x, orig_y, x, y, n, orig_n))
+
+#     #Check for valid direction
+#     elif (orig_y != y and orig_x != x):
+#         raise Exception("# Invalid move from ({}, {}) to ({}, {}): Not a cardinal direction".format(orig_x, orig_y, x, y))
+    
+#     #Check for valid number of spaces moved
+#     elif (abs(orig_y - y) > orig_n or abs(orig_x - x) > orig_n):
+#         raise Exception("# Invalid move from ({}, {}) to ({}, {}): Moved too many spaces. Only {} tokens available".format(orig_x, orig_y, x, y, n))
+    
+#     # Update original stack - 'lifting' the tokens
+#     grid_list[(orig_x, orig_y)] = "w" + str(orig_n - n)
+#     if (int(grid_list[(orig_x,orig_y)][1])) == 0:
+#         del(grid_list[(orig_x, orig_y)])
+
+#     #'Placing' the token
+#     #Check for existence of token
+#     if (x, y) in grid_list.keys():
+#         colour = grid_list[(x,y)][0]
+        
+#         #Check for opponent piece
+#         if colour == "b":
+#             raise Exception("# Invalid move from ({}, {}) to ({}, {}): Opponent token present".format(orig_x, orig_y, x, y))
+        
+#         #Add token to existing stack
+#         total = int(grid_list[(x,y)][1]) + n
+#         grid_list[(x,y)] = "w" + str(total)
+#     else:
+#         #Create a new token stack
+#         grid_list[(x,y)] = "w" + str(n)
+
+#     print("# Move {} pieces from {}, {} to {}, {}".format(n, orig_x, orig_y, x, y))
+#     return get_token_format(grid_list)
+
+
 # Preprocessing for boom
 def boom(stack, board_dict):
     _, x, y = stack   

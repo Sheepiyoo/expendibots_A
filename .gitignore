@@ -1,2 +1,4 @@
+
 .vscode/settings.json
-auto_test/
+board_inspector.py
+*.json

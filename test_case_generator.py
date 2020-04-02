@@ -55,3 +55,8 @@ def run():
         
         with open("test.json", 'w') as f:
             f.write(json_form)
+
+        print("Board accepted")
+
+    else:
+        print("Board rejected")
