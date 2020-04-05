@@ -105,7 +105,7 @@ def get_all_hotspots(data):
       #print_board(full_data)
 
       x, y = max(string_result, key=string_result.get)
-      good_hotspots.append((x,y))
+      good_hotspots.append((1, x, y))
 
       temp_stack = [1, x, y]
       data["black"].append(temp_stack)

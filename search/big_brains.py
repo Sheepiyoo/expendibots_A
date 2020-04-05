@@ -184,13 +184,19 @@ def boom_score_recursive(x, y, grid_format, score):
                 boom_score_recursive(x+i, y+j, grid_format, score)
     return
 
-def board_dict_to_set(board_dict):
-    new_dict = {}
-    new_dict["white"] = set([tuple(i) for i in board_dict["white"]])
-    new_dict["black"] = set([tuple(i) for i in board_dict["black"]])
+def dict_to_set(board_dict):
+    new_dict = set()
+    for i in board_dict["white"]:
+        new_dict.add(tuple([0] + i))
+
+    for i in board_dict["black"]:
+        new_dict.add(tuple([1] + i))
+    
+    #new_dict.add(tuple([1] + i) for i in board_dict["black"])
+    
     #print(new_dict)
     #raise Exception("KMS")
-    return new_dict
+    return frozenset(new_dict)
 
 
 
@@ -207,7 +213,11 @@ def search(initial_state):
     heapq.heappush(nextmoves_list,start_node)
 
     # Collection of states
-    explored_states = []
+    explored_states = set()
+
+    # Hotspots
+    # hotspots = hotspot.get_all_hotspots(initial_state)
+    # print(hotspots)
 
     while(len(nextmoves_list) > 0):
         curr_node = heapq.heappop(nextmoves_list)    # Remove best node from open list
@@ -217,9 +227,9 @@ def search(initial_state):
             print("# GOAL FOUND: BIG BRAINZ")
             break
         
-        if curr_node.board_dict in explored_states: continue
+        if dict_to_set(curr_node.board_dict) in explored_states: continue
         
-        explored_states.append(curr_node.board_dict)
+        explored_states.add(dict_to_set(curr_node.board_dict))
         #explored_states.append(board_dict_to_set(curr_node.board_dict))
         
         # For each curr_node find possible moves and heuristic values of each move
@@ -231,7 +241,7 @@ def search(initial_state):
             #if len(child.board_dict["white"]) <= 0: continue
             
             # Check if we have explored this state already
-            if child.board_dict in explored_states: continue
+            if dict_to_set(child.board_dict) in explored_states: continue
 
             # Check if child is in explored list
             # for closed_child in explored_list:
