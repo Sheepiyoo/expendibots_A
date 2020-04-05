@@ -1,6 +1,7 @@
 from search.game import get_grid_format, boom, move
 from search.constants import *
-#from .. import hotspot
+from search.util import *
+import search.hotspot as hotspot
 import traceback
 import heapq
 
@@ -52,7 +53,7 @@ def assign_hotspot(board_state):
         pass
 
 
-def heuristic1(node):
+def heuristic(node):
     # Best of n stack distance
     if len(node.board_dict["white"]) > 0:
         best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
@@ -67,7 +68,7 @@ def heuristic1(node):
     #distances.sort()    
     return sum(distances)//best_stack #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
-def heuristic(node):
+def heuristic1(node):
     # Best of n chunk distance
     if len(node.board_dict["white"]) > 0:
         best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
@@ -81,7 +82,7 @@ def heuristic(node):
         distances.append(min_distance_from_chunk(chunk, node.board_dict["white"]))
     
     #distances.sort()
-    return sum(distances)//best_stack #//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
+    return sum(distances[0:count_tokens(node.board_dict["white"])])//best_stack #//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
 
 def hotspot_heuristic(node, hotspot_list):
     if len(node.board_dict["white"]) > 0:
@@ -183,7 +184,13 @@ def boom_score_recursive(x, y, grid_format, score):
                 boom_score_recursive(x+i, y+j, grid_format, score)
     return
 
-
+def board_dict_to_set(board_dict):
+    new_dict = {}
+    new_dict["white"] = set([tuple(i) for i in board_dict["white"]])
+    new_dict["black"] = set([tuple(i) for i in board_dict["black"]])
+    #print(new_dict)
+    #raise Exception("KMS")
+    return new_dict
 
 
 
@@ -213,6 +220,7 @@ def search(initial_state):
         if curr_node.board_dict in explored_states: continue
         
         explored_states.append(curr_node.board_dict)
+        #explored_states.append(board_dict_to_set(curr_node.board_dict))
         
         # For each curr_node find possible moves and heuristic values of each move
         generate_children(curr_node)
@@ -331,7 +339,19 @@ def generate_children(parent_node):
         #print('possible actions',actions)
         for action in actions:
             try:
-                next_state = state_after_move(stack, parent_node.board_dict, action)                
+                next_state = state_after_move(stack, parent_node.board_dict, action)
+
+                if action[0] == "boom":
+                    # Check if possible to win at all
+                    min_white_needed = len(hotspot.get_all_hotspots(next_state))
+                    num_white = count_tokens(next_state["white"])
+
+                    # If guarantee loss, don't bother adding to children
+                    if num_white < min_white_needed:
+                        #print_board(get_grid_format(next_state))
+                        #raise Exception("KMS")
+                        continue
+
                 child_node = Node(next_state,
                                 parent_node.path_cost + 1,
                                 action,
