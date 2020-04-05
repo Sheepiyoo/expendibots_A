@@ -11,24 +11,17 @@ def token_positions(token_form, colour):
   black_tokens = copy_tokens
   return get_grid_format(black_tokens)
 
-
+#this doesn't take into account chunks
 def get_good_pos(board_dict):
     priority_dict = {}
     b_tokens = token_positions(board_dict, "black")
-    #print("B_TOKENS",b_tokens)
     for token in board_dict["black"]:
-        #print("for this", token)
         poss_positions = possible_bomb_positions(token[1], token[2], 1)
-        #print('the possible positions are this', poss_positions)
-        #print(poss_positions)
       
         for position in poss_positions:
-          #print('for this position', position)
           if position in b_tokens:
-            #print(position, "is in ")
             pass
           else:
-              #print(position, 'is not in')
               if position in priority_dict : # and also if they're not part of the same bunch
                   priority_dict[position] += 1
 
@@ -59,7 +52,8 @@ def possible_bomb_positions(x, y, n):
           positions.append((x-n, y-n))
     return positions
 
-
+# this is for chunks
+# returns a dictionary of (x,y):hot_spot_value
 def hotspot(chunks, board_dict):
   all_dict = {}
   for chunk in chunks:
