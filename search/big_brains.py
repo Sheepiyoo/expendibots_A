@@ -1,5 +1,6 @@
 from search.game import get_grid_format, boom, move
 from search.constants import *
+from .. import hotspot
 import traceback
 
 # Node representation
@@ -37,6 +38,15 @@ def count_tokens(stack_list):
 # Checks a node - True if no black token remains
 def goal_test(node):
     return len(node.board_dict['black']) == 0
+
+# assigns a white token with a hotspot
+def assign_hotspot(board_state):
+    black_chunks = get_chunks(board_state["black"])
+    hotspot(chunks, )
+    for white in board_state["white"]:
+        pass
+
+
 
 def heuristic(node):
     # Best of n stack distance
@@ -128,6 +138,38 @@ def chunk_recursive(x, y, grid_format, chunk):
     return    
 
 
+def emily(board_dict):
+    hotspot = {}
+    grid_format = get_grid_format(board_dict)
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+            if (i,j) not in grid_format:
+                hotspot[(i,j)] = get_boom_score(i,j, grid_format)
+    return hotspot
+
+def get_boom_score(i, j, grid_format):
+    score = 0
+    boom_score_recursive(i, j, grid_format, score)
+    return score
+
+def boom_score_recursive(x, y, grid_format, score):
+    #Check bounds
+    if not (0 <= x < 8 and 0 <= y < 8):
+        return
+    #If a token is present, explode!        
+    if (x, y) in grid_format.keys():
+        del(grid_format[(x,y)])
+        score += 1
+        #Recursive explosion
+        for i in range(-1,2):
+            for j in range(-1, 2):
+                boom_score_recursive(x+i, y+j, grid_format, score)
+    return
+
+
+
+
+
 # Implement A-star search
 def search(initial_state):
     goal_found = False
@@ -140,6 +182,7 @@ def search(initial_state):
     explored_list = []
 
     # Collection of states
+    next_moves_states = []
     explored_states = []
 
     nextmoves_list.append(start_node)
@@ -159,12 +202,25 @@ def search(initial_state):
 
         # Create children nodes for each move and add them to the open_list
         for child in curr_node.children:
+
+            # Check if child is in explored list
+            for closed_child in explored_list:
+                if closed_child.board_dict == child.board_dict:
+                    continue
+            
+            # Check if child is in next moves and don't add child if total cost is bigger
+            for open_node in nextmoves_list:
+                if child.board_dict == open_node.board_dict and child.heuristic+child.path_cost > open_node.heuristic+open_node.path_cost:
+                    continue
+
             if goal_test(child):
                 # reached the goal
                 curr_node = child
                 goal_found = True
                 final_node = child
                 break
+            
+            # if path to child is shorter than previous path to child 
             
             nextmoves_list.append(child)
 
@@ -190,6 +246,7 @@ def search(initial_state):
         curr_node = curr_node.parent
     #return start_node
     return solution #for debugging purposes - change to return 'solution' after
+
 
 
 #returns whether the token is white
@@ -250,7 +307,8 @@ def generate_children(parent_node):
         #print('possible actions',actions)
         for action in actions:
             try:
-                child_node = Node(state_after_move(stack, parent_node.board_dict, action),
+                next_state = state_after_move(stack, parent_node.board_dict, action)                
+                child_node = Node(next_state,
                                 parent_node.path_cost + 1,
                                 action,
                                 parent_node)
