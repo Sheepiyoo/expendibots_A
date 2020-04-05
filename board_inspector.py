@@ -69,6 +69,6 @@ if __name__ == "__main__":
 
         print(filename, is_possible)
         
-        if is_possible == True:
-            move(filename, os.path.join('true_failures', os.path.basename(filename)))
+        if is_possible == False:
+           os.remove(filename)
         

@@ -1,6 +1,6 @@
 from search.game import get_grid_format, boom, move
 from search.constants import *
-from .. import hotspot
+#from .. import hotspot
 import traceback
 
 # Node representation
@@ -45,7 +45,6 @@ def assign_hotspot(board_state):
     hotspot(chunks, )
     for white in board_state["white"]:
         pass
-
 
 
 def heuristic(node):
@@ -187,44 +186,43 @@ def boom_score_recursive(x, y, grid_format, score):
 def search(initial_state):
     goal_found = False
     solution = []
+
     start_node = Node(initial_state, 0, None, None)
     final_node = None
     
     # Node queue
     nextmoves_list = []
-    explored_list = []
-
-    # Collection of states
-    next_moves_states = []
-    explored_states = []
-
     nextmoves_list.append(start_node)
 
+    # Collection of states
+    explored_states = []
+
     while(len(nextmoves_list) > 0):
-        #print(nextmoves_list)
         curr_node = nextmoves_list.pop(0)    # Remove best node from open list
         if goal_test(curr_node):
+            goal_found = True
             print("# GOAL FOUND: BIG BRAINZ")
             break
 
-        # Check if we have explored this state already
-        if curr_node.board_dict in explored_states: continue
-
+        explored_states.append(curr_node.board_dict)
+        
         # For each curr_node find possible moves and heuristic values of each move
         generate_children(curr_node)
 
         # Create children nodes for each move and add them to the open_list
         for child in curr_node.children:
+            # Check if we have explored this state already
+            if child.board_dict in explored_states: continue
 
             # Check if child is in explored list
-            for closed_child in explored_list:
-                if closed_child.board_dict == child.board_dict:
-                    continue
+            # for closed_child in explored_list:
+            #    if closed_child.board_dict == child.board_dict:
+            #        continue
             
             # Check if child is in next moves and don't add child if total cost is bigger
-            for open_node in nextmoves_list:
-                if child.board_dict == open_node.board_dict and child.heuristic+child.path_cost > open_node.heuristic+open_node.path_cost:
-                    continue
+            # for open_node in nextmoves_list:
+            #    if child.board_dict == open_node.board_dict and child.heuristic+child.path_cost < open_node.heuristic+open_node.path_cost:
+            #        del open_node
 
             if goal_test(child):
                 # reached the goal
@@ -244,8 +242,8 @@ def search(initial_state):
        
         # sort open_list
         nextmoves_list.sort(key = lambda x: x.heuristic)# + x.path_cost)        # Can add path cost to get A star
-        explored_list.append(curr_node)   # Insert into closed list
-        explored_states.append(curr_node.board_dict)
+        #explored_list.append(curr_node)   # Insert into closed list
+        
 
     if goal_found == False:
         print("# No solution")
