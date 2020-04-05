@@ -2,6 +2,7 @@ from search.game import get_grid_format, boom, move
 from search.constants import *
 #from .. import hotspot
 import traceback
+import heapq
 
 # Node representation
 # board_dict: Token arrangement on board
@@ -17,6 +18,7 @@ class Node:
         self.parent = parent
         self.children = []
         self.heuristic = heuristic(self)
+        self.f = self.heuristic + self.path_cost
 
     def __str__(self):
         return """
@@ -27,7 +29,10 @@ class Node:
 # Parent: {}
 # Children: {}
 """.format(str(self.board_dict), str(self.path_cost), str(self.heuristic), str(self.action), hex(id(self.parent)), [hex(id(child)) for child in self.children])
-
+    
+    def __lt__(self, other):
+        #if self.f == other.f: return self.path_cost < other.path_cost
+        return self.f < other.f
 
 def count_tokens(stack_list):
     total = 0
@@ -47,7 +52,7 @@ def assign_hotspot(board_state):
         pass
 
 
-def heuristic(node):
+def heuristic1(node):
     # Best of n stack distance
     if len(node.board_dict["white"]) > 0:
         best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
@@ -59,10 +64,10 @@ def heuristic(node):
     for stack in node.board_dict["black"]:
         distances.append(min_distance_from_stack(stack, node.board_dict["white"]))
     
-    distances.sort()    
+    #distances.sort()    
     return sum(distances)//best_stack #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
-def heuristic1(node):
+def heuristic(node):
     # Best of n chunk distance
     if len(node.board_dict["white"]) > 0:
         best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
@@ -75,8 +80,8 @@ def heuristic1(node):
     for chunk in chunk_list:
         distances.append(min_distance_from_chunk(chunk, node.board_dict["white"]))
     
-    distances.sort()
-    return sum(distances)#//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
+    #distances.sort()
+    return sum(distances)//best_stack #//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
 
 def hotspot_heuristic(node, hotspot_list):
     if len(node.board_dict["white"]) > 0:
@@ -192,18 +197,21 @@ def search(initial_state):
     
     # Node queue
     nextmoves_list = []
-    nextmoves_list.append(start_node)
+    heapq.heappush(nextmoves_list,start_node)
 
     # Collection of states
     explored_states = []
 
     while(len(nextmoves_list) > 0):
-        curr_node = nextmoves_list.pop(0)    # Remove best node from open list
+        curr_node = heapq.heappop(nextmoves_list)    # Remove best node from open list
+        #print(curr_node)
         if goal_test(curr_node):
             goal_found = True
             print("# GOAL FOUND: BIG BRAINZ")
             break
-
+        
+        if curr_node.board_dict in explored_states: continue
+        
         explored_states.append(curr_node.board_dict)
         
         # For each curr_node find possible moves and heuristic values of each move
@@ -211,6 +219,9 @@ def search(initial_state):
 
         # Create children nodes for each move and add them to the open_list
         for child in curr_node.children:
+            # If lose, don't add
+            #if len(child.board_dict["white"]) <= 0: continue
+            
             # Check if we have explored this state already
             if child.board_dict in explored_states: continue
 
@@ -222,6 +233,8 @@ def search(initial_state):
             # Check if child is in next moves and don't add child if total cost is bigger
             # for open_node in nextmoves_list:
             #    if child.board_dict == open_node.board_dict and child.heuristic+child.path_cost < open_node.heuristic+open_node.path_cost:
+            #        #print(open_node, child)
+            #        #raise Exception("KMS")
             #        del open_node
 
             if goal_test(child):
@@ -232,8 +245,8 @@ def search(initial_state):
                 break
             
             # if path to child is shorter than previous path to child 
-            
-            nextmoves_list.append(child)
+            heapq.heappush(nextmoves_list, child)
+            #nextmoves_list.append(child)
 
         if goal_found:
             print("# GOAL FOUND: BIG BRAINZ")
@@ -241,7 +254,7 @@ def search(initial_state):
         
        
         # sort open_list
-        nextmoves_list.sort(key = lambda x: x.heuristic)# + x.path_cost)        # Can add path cost to get A star
+        #nextmoves_list.sort(key = lambda x: x.heuristic + x.path_cost)        # Can add path cost to get A star
         #explored_list.append(curr_node)   # Insert into closed list
         
 
