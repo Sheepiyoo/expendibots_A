@@ -192,8 +192,6 @@ def dict_to_set(board_dict):
     for i in board_dict["black"]:
         new_dict.add(tuple([1] + i))
     
-    #new_dict.add(tuple([1] + i) for i in board_dict["black"])
-    
     #print(new_dict)
     #raise Exception("KMS")
     return frozenset(new_dict)
