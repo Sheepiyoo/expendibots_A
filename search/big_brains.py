@@ -79,6 +79,19 @@ def heuristic1(node):
     distances.sort()
     return sum(distances)#//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
 
+def hotspot_heuristic(node, hotspot_list):
+    if len(node.board_dict["white"]) > 0:
+        best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
+    else:
+        best_stack = 1
+    distances = []
+    i = 0
+    for hotspot in hotspot_list and i < len(node.board_dict["white"]):
+        distances.append(min_distance_from_stack([hotspot[0], hotspot[1], 1], node.board_dict["white"]))
+        i += 1
+    distances.sort()
+    return sum(distances)//best_stack
+
 def min_distance_from_chunk(chunk, stack_list):
     min_distance = BOARD_SIZE*2
 
