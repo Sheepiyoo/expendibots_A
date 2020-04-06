@@ -18,7 +18,7 @@ class Node:
         self.action = action
         self.parent = parent
         self.children = []
-        self.heuristic = heuristic2(self)
+        self.heuristic = heuristic(self)
         self.f = self.heuristic + self.path_cost
 
     def __str__(self):
