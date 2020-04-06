@@ -109,11 +109,6 @@ def min_distance_from_stack(source, stack_list):
 
     return min_distance
 
-
-def chess_distance(stack1, stack2):
-    # Chess board distance as booming can take surrounding 9 squares
-    return max(abs(stack1[X_POS]-stack2[X_POS]),abs(stack1[Y_POS]-stack2[Y_POS]))
-
 def hamming_distance(stack1, stack2):
     # Chess board distance as booming can take surrounding 9 squares
     return abs(stack1[X_POS]-stack2[X_POS]) + abs(stack1[Y_POS]-stack2[Y_POS])
@@ -227,7 +222,7 @@ def search(initial_state):
         curr_node = curr_node.parent
 
     return solution 
-    
+
 #returns whether the token is white
 def is_white(colour_n):
     player = colour_n[0]
