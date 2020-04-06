@@ -124,7 +124,7 @@ def min_distance_from_stack(source, stack_list):
         h_dist = hamming_distance(source, stack_list[i]) - 1
         #c_dist = chess_distance(source, stack_list[i]) - 1
         
-        min_distance = min(min_distance, h_dist) + 1
+        min_distance = min(min_distance, h_dist)
 
     return min_distance
 
@@ -223,6 +223,8 @@ def boom_score_recursive(x, y, grid_format, score):
                 boom_score_recursive(x+i, y+j, grid_format, score)
     return
 
+#######################################################################################
+
 def dict_to_set(board_dict):
     new_dict = set()
     for i in board_dict["white"]:
@@ -233,15 +235,12 @@ def dict_to_set(board_dict):
     
     return frozenset(new_dict)
 
-
-
 # Implement A-star search
 def search(initial_state):
     goal_found = False
     solution = []
 
     start_node = Node(initial_state, 0, None, None)
-    final_node = None
     
     # Node queue
     nextmoves_list = []
@@ -250,81 +249,56 @@ def search(initial_state):
     # Collection of states
     explored_states = set()
 
-    # Hotspots
-    # hotspots = hotspot.get_all_hotspots(initial_state)
-    # print(hotspots)
-
     while(len(nextmoves_list) > 0):
         curr_node = heapq.heappop(nextmoves_list)    # Remove best node from open list
-        #print(curr_node)
         if goal_test(curr_node):
             goal_found = True
-            print("# GOAL FOUND: BIG BRAINZ")
             break
         
         if dict_to_set(curr_node.board_dict) in explored_states: continue
         
         explored_states.add(dict_to_set(curr_node.board_dict))
-        #explored_states.append(board_dict_to_set(curr_node.board_dict))
         
+        # Prune guaranteed losses
+        if curr_node.action != None and curr_node.action[0] == "boom":
+            # Check if possible to win at all
+            min_white_needed = len(hotspot.get_all_hotspots(curr_node.board_dict))
+            num_white = count_tokens(curr_node.board_dict["white"])
+                    
+            # If guarantee loss, don't bother generating children
+            if num_white < min_white_needed: continue
+
         # For each curr_node find possible moves and heuristic values of each move
         generate_children(curr_node)
 
         # Create children nodes for each move and add them to the open_list
         for child in curr_node.children:
-            # If lose, don't add
-            #if len(child.board_dict["white"]) <= 0: continue
-            
             # Check if we have explored this state already
             if dict_to_set(child.board_dict) in explored_states: continue
 
-            # Check if child is in explored list
-            # for closed_child in explored_list:
-            #    if closed_child.board_dict == child.board_dict:
-            #        continue
-            
-            # Check if child is in next moves and don't add child if total cost is bigger
-            # for open_node in nextmoves_list:
-            #    if child.board_dict == open_node.board_dict and child.heuristic+child.path_cost < open_node.heuristic+open_node.path_cost:
-            #        #print(open_node, child)
-            #        #raise Exception("KMS")
-            #        del open_node
-
+            # Reached the goal
             if goal_test(child):
-                # reached the goal
                 curr_node = child
                 goal_found = True
-                final_node = child
                 break
             
             # if path to child is shorter than previous path to child 
             heapq.heappush(nextmoves_list, child)
-            #nextmoves_list.append(child)
-
-        if goal_found:
-            print("# GOAL FOUND: BIG BRAINZ")
-            break
+ 
+        if goal_found: break
         
-       
-        # sort open_list
-        #nextmoves_list.sort(key = lambda x: x.heuristic + x.path_cost)        # Can add path cost to get A star
-        #explored_list.append(curr_node)   # Insert into closed list
-        
-
+    # If searched and no solution found
     if goal_found == False:
         print("# No solution")
         raise Exception("No solution possible")
         return
         
-
     # Reconstruct solution by tracing back parents from curr_node (Thanks Emily :D )
     while(curr_node.parent != None):
         solution.insert(0, curr_node.action)
         curr_node = curr_node.parent
-    #return start_node
+
     return solution #for debugging purposes - change to return 'solution' after
-
-
 
 #returns whether the token is white
 def is_white(colour_n):
@@ -352,7 +326,6 @@ def possible_positions(x, y, n):
 def get_possible_actions(stack_from, board):
     grid_board = get_grid_format(board)
     possible_actions = []
-    #n_original = stack
     x_pos, y_pos = stack_from[X_POS],  stack_from[Y_POS]
     possible_actions.append(["boom", stack_from, stack_from])
     #print(grid_board)
@@ -385,18 +358,6 @@ def generate_children(parent_node):
         for action in actions:
             try:
                 next_state = state_after_move(stack, parent_node.board_dict, action)
-
-                if action[0] == "boom":
-                    # Check if possible to win at all
-                    min_white_needed = len(hotspot.get_all_hotspots(next_state))
-                    num_white = count_tokens(next_state["white"])
-
-                    # If guarantee loss, don't bother adding to children
-                    if num_white < min_white_needed:
-                        #print_board(get_grid_format(next_state))
-                        #raise Exception("KMS")
-                        continue
-
                 child_node = Node(next_state,
                                 parent_node.path_cost + 1,
                                 action,
@@ -427,7 +388,7 @@ def state_after_move(stack, board_dict, action):
             raise Exception("Move invalid")
     else:
         raise Exception("state_after_move: Invalid action")
-    #print(board_dict)
+    
     return board_dict
 
 # Debugging tool: Print out all nodes of the tree

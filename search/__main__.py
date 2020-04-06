@@ -14,14 +14,6 @@ def main():
 
     # TODO: find and print winning action sequence
     
-    """
-    board = data
-    print_board(game.get_grid_format(board) , "Start")
-    board = game.move([1,0,1], [1,0,0], board)
-    print_board(game.get_grid_format(board) , "Moved")
-    board = game.move([1,0,1], [1,0,0], board)
-    print_board(game.get_grid_format(board) , "Moved")
-    """
     start = time.time()
     
     print("# ", data)
@@ -31,8 +23,6 @@ def main():
     solution = ai.search(data)
     print("# solution",solution)
     
-
-    #ai.breadth_first_tree_traversal(solution)
         
     for action, stack_from, stack_to in solution:
         if action == "move" or action == "stack":
