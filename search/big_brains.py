@@ -109,32 +109,6 @@ def min_distance_from_stack(source, stack_list):
 
     return min_distance
 
-def min_distance_from_stack2(source, stack_list):
-    # Minimum distance from a black stack to one of the white stacks
-    min_distance = BOARD_SIZE*2
-    for i in range(len(stack_list)):
-        h_dist = hamming_distance(source, stack_list[i]) - 1
-        #c_dist = chess_distance(source, stack_list[i]) - 1
-        
-        if(min_distance > h_dist):
-            min_distance = min(min_distance, h_dist)
-            n_moves = min_distance//stack_list[i][N_TOKENS] +1
-
-    return n_moves
-
-def min_distance_from_stack3(source, stack_list):
-    # Minimum distance from a black stack to one of the white stacks
-    min_distance = BOARD_SIZE*2
-    for i in range(len(stack_list)):
-        h_dist = hamming_distance(source, stack_list[i]) - 1
-        #c_dist = chess_distance(source, stack_list[i]) - 1
-        
-        if(min_distance > h_dist):
-            min_distance = min(min_distance, h_dist)
-            n = min_distance%stack_list[i][N_TOKENS]
-            n_moves = min_distance//stack_list[i][N_TOKENS] + n
-
-    return n_moves
 
 def chess_distance(stack1, stack2):
     # Chess board distance as booming can take surrounding 9 squares
@@ -252,8 +226,8 @@ def search(initial_state):
         solution.insert(0, curr_node.action)
         curr_node = curr_node.parent
 
-    return solution #for debugging purposes - change to return 'solution' after
-
+    return solution 
+    
 #returns whether the token is white
 def is_white(colour_n):
     player = colour_n[0]
