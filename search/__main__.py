@@ -16,16 +16,13 @@ def main():
     
     start = time.time()
     
-    print("# ", data)
     board = data
     print_board(game.get_grid_format(board) , "Start")
 
     solution = ai.search(data)
-    print("# solution",solution)
-    
         
     for action, stack_from, stack_to in solution:
-        if action == "move" or action == "stack":
+        if action == "move":
             board = game.move(stack_from, stack_to, board)
             if DEBUG: print_board(game.get_grid_format(board))
             else: print_move(stack_to[N_TOKENS], stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS])
@@ -35,7 +32,7 @@ def main():
             if DEBUG: print_board(game.get_grid_format(board))
             else: print_boom(stack_from[X_POS], stack_from[Y_POS])
             pass
-    print("# length of solution ", len(solution))
+    print("# Length of solution ", len(solution))
     print("# Execution time: ", time.time() - start)
 
 if __name__ == '__main__':

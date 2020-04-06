@@ -71,6 +71,7 @@ def move(stack_from, stack_to, board_dict):
             total = int(grid_list[(stack_to[X_POS],stack_to[Y_POS])][1]) + stack_to[N_TOKENS]
             grid_list[(stack_to[X_POS],stack_to[Y_POS])] = "w" + str(total)
             #print_move(stack_to[N_TOKENS], stack_from[X_POS], stack_from[Y_POS], stack_to[X_POS], stack_to[Y_POS])
+            
     # if it's not occupied
     else:
         grid_list[(stack_to[X_POS], stack_to[Y_POS])] = "w" + str(stack_to[N_TOKENS])

@@ -9,14 +9,14 @@ def run():
     MAX_NUM_BLACK = 12
 
     MAX_STACK_WHITE = 3
-    MAX_STACK_BLACK = 8
+    MAX_STACK_BLACK = 12
 
     data = {"white": [],
             "black": []}
 
     num_stack_white = random.randint(1, MAX_STACK_WHITE)
 
-    num_stack_black = random.randint(1, 4 * num_stack_white)
+    num_stack_black = random.randint(1, MAX_STACK_BLACK)
     #num_stack_black = random.randint(1, MAX_STACK_BLACK)
 
     occupied = []
@@ -24,7 +24,7 @@ def run():
     for stack in range(num_stack_white):
         if MAX_NUM_WHITE <= 0: break
 
-        n = random.randint(1, min(2, MAX_NUM_WHITE))
+        n = random.randint(1, MAX_NUM_WHITE)
         x = random.randint(0, 7)
         y = random.randint(0, 7)
 
@@ -45,7 +45,7 @@ def run():
             data["black"].append([n, x, y])
             MAX_NUM_BLACK -= n
 
-    print(data)
+    #print(data)
     print_board(get_grid_format(data))
 
     #accepted = input("Accept this arrangement? (y/n): \n")
