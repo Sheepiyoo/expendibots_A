@@ -18,7 +18,7 @@ class Node:
         self.action = action
         self.parent = parent
         self.children = []
-        self.heuristic = heuristic(self)
+        self.heuristic = heuristic2(self)
         self.f = self.heuristic + self.path_cost
 
     def __str__(self):
@@ -68,6 +68,18 @@ def heuristic(node):
     #distances.sort()    
     return sum(distances)//best_stack #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
+def heuristic2(node):
+
+    distances = []
+    
+    for stack in node.board_dict["black"]:
+        value = min_distance_from_stack2(stack, node.board_dict["white"]) + 1
+        #value = min_distance_from_stack3(stack, node.board_dict["white"])
+        distances.append(value)
+    
+    #distances.sort()    
+    return sum(distances) #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
+
 def heuristic1(node):
     # Best of n chunk distance
     if len(node.board_dict["white"]) > 0:
@@ -112,9 +124,36 @@ def min_distance_from_stack(source, stack_list):
         h_dist = hamming_distance(source, stack_list[i]) - 1
         #c_dist = chess_distance(source, stack_list[i]) - 1
         
-        min_distance = min(min_distance, h_dist)
+        min_distance = min(min_distance, h_dist) + 1
 
     return min_distance
+
+def min_distance_from_stack2(source, stack_list):
+    # Minimum distance from a black stack to one of the white stacks
+    min_distance = BOARD_SIZE*2
+    for i in range(len(stack_list)):
+        h_dist = hamming_distance(source, stack_list[i]) - 1
+        #c_dist = chess_distance(source, stack_list[i]) - 1
+        
+        if(min_distance > h_dist):
+            min_distance = min(min_distance, h_dist)
+            n_moves = min_distance//stack_list[i][N_TOKENS] +1
+
+    return n_moves
+
+def min_distance_from_stack3(source, stack_list):
+    # Minimum distance from a black stack to one of the white stacks
+    min_distance = BOARD_SIZE*2
+    for i in range(len(stack_list)):
+        h_dist = hamming_distance(source, stack_list[i]) - 1
+        #c_dist = chess_distance(source, stack_list[i]) - 1
+        
+        if(min_distance > h_dist):
+            min_distance = min(min_distance, h_dist)
+            n = min_distance%stack_list[i][N_TOKENS]
+            n_moves = min_distance//stack_list[i][N_TOKENS] + n
+
+    return n_moves
 
 def chess_distance(stack1, stack2):
     # Chess board distance as booming can take surrounding 9 squares
@@ -192,8 +231,6 @@ def dict_to_set(board_dict):
     for i in board_dict["black"]:
         new_dict.add(tuple([1] + i))
     
-    #print(new_dict)
-    #raise Exception("KMS")
     return frozenset(new_dict)
 
 
