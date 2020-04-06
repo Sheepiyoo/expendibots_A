@@ -60,35 +60,6 @@ def heuristic(node):
     #distances.sort()    
     return sum(distances)//best_stack #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
-def heuristic1(node):
-    # Best of n chunk distance
-    if len(node.board_dict["white"]) > 0:
-        best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
-    else:
-        best_stack = 1
-
-    chunk_list = get_chunks({"black": node.board_dict["black"]})
-    distances = []
-    
-    for chunk in chunk_list:
-        distances.append(min_distance_from_chunk(chunk, node.board_dict["white"]))
-    
-    distances.sort()
-    value = sum(distances[:len(node.board_dict["white"])])/max(1, count_tokens(node.board_dict["white"])) #//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
-    #print_board(get_grid_format(node.board_dict), message=str(value))
-    return value
-
-def heuristic2(node):
-
-    distances = []
-    
-    for stack in node.board_dict["black"]:
-        value = min_distance_from_stack2(stack, node.board_dict["white"]) + 1
-        #value = min_distance_from_stack3(stack, node.board_dict["white"])
-        distances.append(value)
-    
-    #distances.sort()    
-    return sum(distances) #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
 def min_distance_from_chunk(chunk, stack_list):
     min_distance = BOARD_SIZE*2
