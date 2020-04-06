@@ -45,14 +45,6 @@ def count_tokens(stack_list):
 def goal_test(node):
     return len(node.board_dict['black']) == 0
 
-# assigns a white token with a hotspot
-def assign_hotspot(board_state):
-    black_chunks = get_chunks(board_state["black"])
-    hotspot(chunks, )
-    for white in board_state["white"]:
-        pass
-
-
 def heuristic(node):
     # Best of n stack distance
     if len(node.board_dict["white"]) > 0:
@@ -68,18 +60,6 @@ def heuristic(node):
     #distances.sort()    
     return sum(distances)//best_stack #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
-def heuristic2(node):
-
-    distances = []
-    
-    for stack in node.board_dict["black"]:
-        value = min_distance_from_stack2(stack, node.board_dict["white"]) + 1
-        #value = min_distance_from_stack3(stack, node.board_dict["white"])
-        distances.append(value)
-    
-    #distances.sort()    
-    return sum(distances) #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
-
 def heuristic1(node):
     # Best of n chunk distance
     if len(node.board_dict["white"]) > 0:
@@ -93,21 +73,22 @@ def heuristic1(node):
     for chunk in chunk_list:
         distances.append(min_distance_from_chunk(chunk, node.board_dict["white"]))
     
-    #distances.sort()
-    return sum(distances[0:count_tokens(node.board_dict["white"])])//best_stack #//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
-
-def hotspot_heuristic(node, hotspot_list):
-    if len(node.board_dict["white"]) > 0:
-        best_stack = max([stack[N_TOKENS] for stack in node.board_dict['white']])
-    else:
-        best_stack = 1
-    distances = []
-    i = 0
-    for hotspot in hotspot_list and i < len(node.board_dict["white"]):
-        distances.append(min_distance_from_stack([hotspot[0], hotspot[1], 1], node.board_dict["white"]))
-        i += 1
     distances.sort()
-    return sum(distances)//best_stack
+    value = sum(distances[:len(node.board_dict["white"])])/max(1, count_tokens(node.board_dict["white"])) #//(best_stack * count_tokens(node.board_dict["black"]))  #best_stack #[:len(node.board_dict["white"])]
+    #print_board(get_grid_format(node.board_dict), message=str(value))
+    return value
+
+def heuristic2(node):
+
+    distances = []
+    
+    for stack in node.board_dict["black"]:
+        value = min_distance_from_stack2(stack, node.board_dict["white"]) + 1
+        #value = min_distance_from_stack3(stack, node.board_dict["white"])
+        distances.append(value)
+    
+    #distances.sort()    
+    return sum(distances) #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
 def min_distance_from_chunk(chunk, stack_list):
     min_distance = BOARD_SIZE*2
@@ -194,35 +175,6 @@ def chunk_recursive(x, y, grid_format, chunk):
       return
     return    
 
-
-def emily(board_dict):
-    hotspot = {}
-    grid_format = get_grid_format(board_dict)
-    for i in range(BOARD_SIZE):
-        for j in range(BOARD_SIZE):
-            if (i,j) not in grid_format:
-                hotspot[(i,j)] = get_boom_score(i,j, grid_format)
-    return hotspot
-
-def get_boom_score(i, j, grid_format):
-    score = 0
-    boom_score_recursive(i, j, grid_format, score)
-    return score
-
-def boom_score_recursive(x, y, grid_format, score):
-    #Check bounds
-    if not (0 <= x < 8 and 0 <= y < 8):
-        return
-    #If a token is present, explode!        
-    if (x, y) in grid_format.keys():
-        del(grid_format[(x,y)])
-        score += 1
-        #Recursive explosion
-        for i in range(-1,2):
-            for j in range(-1, 2):
-                boom_score_recursive(x+i, y+j, grid_format, score)
-    return
-
 #######################################################################################
 
 def dict_to_set(board_dict):
@@ -256,11 +208,13 @@ def search(initial_state):
             break
         
         if dict_to_set(curr_node.board_dict) in explored_states: continue
-        
+
         explored_states.add(dict_to_set(curr_node.board_dict))
         
         # Prune guaranteed losses
-        if curr_node.action != None and curr_node.action[0] == "boom":
+        if count_tokens(curr_node.board_dict["white"]) == 0: continue
+
+        elif curr_node.action != None and curr_node.action[0] == "boom":
             # Check if possible to win at all
             min_white_needed = len(hotspot.get_all_hotspots(curr_node.board_dict))
             num_white = count_tokens(curr_node.board_dict["white"])
@@ -302,7 +256,7 @@ def search(initial_state):
 
 #returns whether the token is white
 def is_white(colour_n):
-    player, n = colour_n
+    player = colour_n[0]
     if player == "w":
         return True
     return False
