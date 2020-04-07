@@ -4,7 +4,7 @@ from shutil import move
 import glob
 import board_inspector
 
-target = 10000
+target = 100000
 
 good_count = 0
 bad_count = 0

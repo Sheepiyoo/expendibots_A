@@ -60,27 +60,16 @@ def heuristic(node):
     #distances.sort()    
     return sum(distances)//best_stack #(max(0.01, len(node.board_dict["white"])))# * best_stack) #best_stack 
 
-
-def min_distance_from_chunk(chunk, stack_list):
-    min_distance = BOARD_SIZE*2
-
-    for stack in chunk:
-        min_distance = min(min_distance, min_distance_from_stack(stack, stack_list))
-    
-    return min_distance
-
 def min_distance_from_stack(source, stack_list):
     # Minimum distance from a black stack to one of the white stacks
     min_distance = BOARD_SIZE*2
     for i in range(len(stack_list)):
-        h_dist = hamming_distance(source, stack_list[i]) - 1
-        #c_dist = chess_distance(source, stack_list[i]) - 1
-        
+        h_dist = manhattan_distance(source, stack_list[i]) - 1
         min_distance = min(min_distance, h_dist)
 
     return min_distance
 
-def hamming_distance(stack1, stack2):
+def manhattan_distance(stack1, stack2):
     # Chess board distance as booming can take surrounding 9 squares
     return abs(stack1[X_POS]-stack2[X_POS]) + abs(stack1[Y_POS]-stack2[Y_POS])
 
@@ -184,7 +173,7 @@ def search(initial_state):
     # If searched and no solution found
     if goal_found == False:
         print("# No solution")
-        raise Exception("No solution possible")
+        raise Exception("# No solution possible")
         return
         
     # Reconstruct solution by tracing back parents from curr_node (Thanks Emily :D )
@@ -270,18 +259,17 @@ def state_after_move(stack, board_dict, action):
         try:
             board_dict = boom(stack, board_dict)
         except Exception as e:
-            print(e)
-            print("Tried to execute: boom({}, {}) ".format(stack, board_dict))
-            raise Exception("Move invalid")
+            print("# Tried to execute: boom({}, {}) ".format(stack, board_dict))
+            raise Exception("# Move invalid")
     elif action[ACTION] == "move":
         try:
             board_dict = move(stack, action[TO], board_dict)
         except Exception as e:
             print(str(e))
-            print("Tried to execute: move({}, {}, {}, {}, {}) ".format(stack, action[TO][X_POS], action[TO][Y_POS], board_dict, action[TO][N_TOKENS]))
-            raise Exception("Move invalid")
+            print("# Tried to execute: move({}, {}, {}, {}, {}) ".format(stack, action[TO][X_POS], action[TO][Y_POS], board_dict, action[TO][N_TOKENS]))
+            raise Exception("# Move invalid")
     else:
-        raise Exception("state_after_move: Invalid action")
+        raise Exception("# state_after_move: Invalid action")
     
     return board_dict
 
