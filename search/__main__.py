@@ -31,7 +31,7 @@ def main():
             board = game.boom(stack_from, board)
             if DEBUG: print_board(game.get_grid_format(board))
             else: print_boom(stack_from[X_POS], stack_from[Y_POS])
-            pass
+
     print("# Length of solution ", len(solution))
     print("# Execution time: ", time.time() - start)
 

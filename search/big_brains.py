@@ -32,7 +32,6 @@ class Node:
 """.format(str(self.board_dict), str(self.path_cost), str(self.heuristic), str(self.action), hex(id(self.parent)), [hex(id(child)) for child in self.children])
     
     def __lt__(self, other):
-        #if self.f == other.f: return self.path_cost < other.path_cost
         return self.f < other.f
 
 def count_tokens(stack_list):
